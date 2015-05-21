@@ -29,7 +29,6 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from copy import deepcopy
 
 import gi
 gi.require_version('Gst', '1.0')
@@ -45,7 +44,7 @@ from .pandora import *
 from .pandora.data import *
 from .pithosconfig import get_ui_file, get_media_file, VERSION
 from .plugin import load_plugins
-from .util import parse_proxy, open_browser
+from .util import parse_proxy, open_browser, get_account_password
 
 pacparser_imported = False
 try:
@@ -151,14 +150,18 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.builder = builder
         self.builder.connect_signals(self)
 
-        self.prefs_dlg = PreferencesPithosDialog.NewPreferencesPithosDialog()
+        self.settings = Gio.Settings.new('io.github.Pithos')
+        # FIXME: These don't respect delay()
+        self.settings.connect('changed::audio-quality', self.set_audio_quality)
+        self.settings.connect('changed::proxy', self.set_proxy)
+        self.settings.connect('changed::control_proxy', self.set_proxy)
+        self.settings.connect('changed::control_proxy_pac', self.set_proxy)
+        #self.settings.connect('changed::email', self.pandora_connect)
+        #self.settings.connect('changed::pandora-one', self.pandora_connect)
+
+        self.prefs_dlg = PreferencesPithosDialog.NewPreferencesPithosDialog(self.settings)
         self.prefs_dlg.set_transient_for(self)
         self.prefs_dlg.connect_after('response', self.on_prefs_response)
-        self.preferences = self.prefs_dlg.get_preferences()
-
-        if self.prefs_dlg.fix_perms():
-            # Changes were made, save new config variable
-            self.prefs_dlg.save()
 
         self.init_core()
         self.init_ui()
@@ -172,7 +175,9 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.set_proxy()
         self.set_audio_quality()
 
-        if not self.preferences['username'] or not self.preferences['password']:
+        email = self.settings.get_string('email')
+        password = get_account_password(email)
+        if not email or not password:
             self.show()
             self.show_preferences()
         else:
@@ -208,7 +213,7 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.playing = None # None is a special "Waiting to play" state
         self.current_song_index = None
         self.current_station = None
-        self.current_station_id = self.preferences.get('last_station_id')
+        self.current_station_id = self.settings.get_string('last-station-id')
 
         self.auto_retrying_auth = False
         self.have_stations = False
@@ -235,7 +240,7 @@ class PithosWindow(Gtk.ApplicationWindow):
 
         self.volume = self.builder.get_object('volume')
         self.volume.set_relief(Gtk.ReliefStyle.NORMAL)  # It ignores glade...
-        self.volume.set_property("value", math.pow(float(self.preferences['volume']), 1.0/3.0))
+        self.settings.bind('volume', self.volume, 'value', Gio.SettingsBindFlags.DEFAULT)
 
         self.statusbar = self.builder.get_object('statusbar1')
 
@@ -376,8 +381,9 @@ class PithosWindow(Gtk.ApplicationWindow):
     def get_proxy(self):
         """ Get HTTP proxy, first trying preferences then system proxy """
 
-        if self.preferences['proxy']:
-            return self.preferences['proxy']
+        proxy = self.settings.get_string('proxy')
+        if proxy:
+            return proxy
 
         system_proxies = urllib.request.getproxies()
         if 'http' in system_proxies:
@@ -385,7 +391,7 @@ class PithosWindow(Gtk.ApplicationWindow):
 
         return None
 
-    def set_proxy(self):
+    def set_proxy(self, *ignore):
         # proxy preference is used for all Pithos HTTP traffic
         # control proxy preference is used only for Pandora traffic and
         # overrides proxy
@@ -394,15 +400,15 @@ class PithosWindow(Gtk.ApplicationWindow):
         # by default
 
         handlers = []
-        global_proxy = self.preferences['proxy']
+        global_proxy = self.settings.get_string('proxy')
         if global_proxy:
             handlers.append(urllib.request.ProxyHandler({'http': global_proxy, 'https': global_proxy}))
         global_opener = urllib.request.build_opener(*handlers)
         urllib.request.install_opener(global_opener)
 
         control_opener = global_opener
-        control_proxy = self.preferences['control_proxy']
-        control_proxy_pac = self.preferences['control_proxy_pac']
+        control_proxy = self.settings.get_string('control-proxy')
+        control_proxy_pac = self.settings.get_string('control-proxy-pac')
 
         if control_proxy:
             control_opener = urllib.request.build_opener(urllib.request.ProxyHandler({'http': control_proxy, 'https': control_proxy}))
@@ -430,17 +436,17 @@ class PithosWindow(Gtk.ApplicationWindow):
 
         self.worker_run('set_url_opener', (control_opener,))
 
-    def set_audio_quality(self):
-        self.worker_run('set_audio_quality', (self.preferences['audio_quality'],))
+    def set_audio_quality(self, *ignore):
+        self.worker_run('set_audio_quality', (self.settings.get_string('audio-quality'),))
 
-    def pandora_connect(self, message="Logging in...", callback=None):
-        if self.preferences['pandora_one']:
+    def pandora_connect(self, *ignore, message="Logging in...", callback=None):
+        if self.settings.get_boolean('pandora-one'):
             client = client_keys[default_one_client_id]
         else:
             client = client_keys[default_client_id]
 
         # Allow user to override client settings
-        force_client = self.preferences['force_client']
+        force_client = self.settings.get_string('force-client')
         if force_client in client_keys:
             client = client_keys[force_client]
         elif force_client and force_client[0] == '{':
@@ -449,10 +455,12 @@ class PithosWindow(Gtk.ApplicationWindow):
             except:
                 logging.error("Could not parse force_client json")
 
+
+        email = self.settings.get_string('email')
         args = (
             client,
-            self.preferences['username'],
-            self.preferences['password'],
+            email,
+            get_account_password(email),
         )
 
         def pandora_ready(*ignore):
@@ -676,6 +684,7 @@ class PithosWindow(Gtk.ApplicationWindow):
         logging.info("Selecting station %s; total = %i" % (station.id, len(self.stations_model)))
         self.current_station_id = station.id
         self.current_station = station
+        self.settings.set_string('last-station-id', self.current_station_id)
         if not reconnecting:
             self.get_playlist(start = True)
         self.stations_label.set_text(station.name)
@@ -821,7 +830,7 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.volume.handler_block_by_func(self.on_volume_change_event)
         self.volume.set_property("value", scaled_volume)
         self.volume.handler_unblock_by_func(self.on_volume_change_event)
-        self.preferences['volume'] = volume
+        #self.preferences['volume'] = volume
 
     def on_gst_volume(self, player, volumespec):
         vol = self.player.get_property('volume')
@@ -1016,7 +1025,7 @@ class PithosWindow(Gtk.ApplicationWindow):
         # Use a cubic scale for volume. This matches what PulseAudio uses.
         volume = math.pow(value, 3)
         self.player.set_property("volume", volume)
-        self.preferences['volume'] = volume
+        #self.preferences['volume'] = volume
 
     def adjust_volume(self, amount):
         old_volume = self.volume.get_property("value")
@@ -1045,24 +1054,19 @@ class PithosWindow(Gtk.ApplicationWindow):
     def on_prefs_response(self, widget, response):
         self.prefs_dlg.hide()
 
+        email = self.settings.get_string('email')
         if response == Gtk.ResponseType.APPLY:
-            self.preferences = self.prefs_dlg.get_preferences()
-            if (   self.preferences['proxy'] != self.old_prefs['proxy']
-                or self.preferences['control_proxy'] != self.old_prefs['control_proxy']):
-                self.set_proxy()
-            if self.preferences['audio_quality'] != self.old_prefs['audio_quality']:
-                self.set_audio_quality()
-            if (   self.preferences['username'] != self.old_prefs['username']
-                or self.preferences['password'] != self.old_prefs['password']
-                or self.preferences['pandora_one'] != self.old_prefs['pandora_one']):
-                    self.pandora_connect()
+            if get_account_password(email) != self.last_pass:
+                self.pandora_connect()
         else:
-            if not self.preferences['username'] or not self.preferences['password']:
+            if not email or not get_account_password(email):
                 self.quit()
+        self.last_pass = ''
 
     def show_preferences(self):
         """preferences - display the preferences window for pithos """
-        self.old_prefs = deepcopy(self.preferences)
+        self.last_pass = get_account_password(self.settings.get_string('email'))
+        self.settings.delay() # Dialog will apply
         self.prefs_dlg.show()
 
     def show_stations(self):
@@ -1078,7 +1082,7 @@ class PithosWindow(Gtk.ApplicationWindow):
 
     def set_initial_pos(self):
         """ Moves window to position stored in preferences """
-        x, y = self.preferences['x_pos'], self.preferences['y_pos']
+        x, y = self.settings.get_value('win-pos')
         if not x is None and not y is None:
             self.move(int(x), int(y))
 
@@ -1088,7 +1092,8 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.present()
 
     def on_configure_event(self, widget, event):
-        self.preferences['x_pos'], self.preferences['y_pos'] = event.x, event.y
+        self.settings.set_value('win-pos', GLib.Variant.new_tuple(GLib.Variant.new_int32(event.x),
+                                GLib.Variant.new_int32(event.y)))
 
     def quit(self, widget=None, data=None):
         """quit - signal handler for closing the PithosWindow"""
@@ -1097,8 +1102,6 @@ class PithosWindow(Gtk.ApplicationWindow):
     def on_destroy(self, widget, data=None):
         """on_destroy - called when the PithosWindow is close. """
         self.stop()
-        self.preferences['last_station_id'] = self.current_station_id
-        self.prefs_dlg.save()
         self.quit()
 
 def NewPithosWindow(app, options):

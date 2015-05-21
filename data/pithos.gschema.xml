@@ -1,0 +1,65 @@
+<schemalist>
+  <schema id="io.github.Pithos" path="/io/github/Pithos/" gettext-domain="pithos">
+
+    <key name="email" type="s">
+      <default>""</default>
+    </key>
+
+    <key name="pandora-one" type="b">
+      <default>false</default>
+    </key>
+
+    <key name="last-station-id" type="s">
+      <default>""</default>
+      <summary>ID of last station played</summary>
+    </key>
+
+    <key name="proxy" type="s">
+      <default>""</default>
+    </key>
+
+    <key name="control-proxy" type="s">
+      <default>""</default>
+    </key>
+
+    <key name="force-client" type="s">
+      <default>""</default>
+    </key>
+
+    <key name="control-proxy-pac" type="s">
+      <default>""</default>
+    </key>
+
+    <key name="win-pos" type="(ii)">
+      <default>(0,0)</default>
+    </key>
+
+    <key name="volume" type="d">
+      <default>0.7</default>
+      <range min="0.0" max="1.0"/>
+    </key>
+
+    <key name="audio-quality" type="s">
+      <choices>
+        <choice value="Low"/>
+        <choice value="Medium"/>
+        <choice value="High"/>
+      </choices>
+      <default>"Medium"</default>
+    </key>
+
+  </schema>
+
+  <!-- relocatable schema -->
+  <schema id="io.github.Pithos.plugin">
+
+    <key name="enabled" type="b">
+      <default>false</default>
+    </key>
+
+    <key name="data" type="s">
+      <default>""</default>
+    </key>
+
+  </schema>
+</schemalist>

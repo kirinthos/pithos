@@ -17,6 +17,22 @@
 import logging
 import webbrowser
 from urllib.parse import splittype, splituser, splitpasswd
+from gi.repository import Secret
+
+_ACCOUNT_SCHEMA = Secret.Schema.new('io.github.Pithos.Account', Secret.SchemaFlags.NONE, 
+                                    {"email": Secret.SchemaAttributeType.STRING})
+
+# TODO: Async
+def get_account_password(email):
+    return Secret.password_lookup_sync(_ACCOUNT_SCHEMA, {"email": email}, None) or ''
+
+def set_account_password(email, password):
+    attrs = {"email": email}
+    if password:
+        Secret.password_store_sync(_ACCOUNT_SCHEMA, attrs, Secret.COLLECTION_DEFAULT,
+                                    "Pandora Account", password, None)
+    else:
+        Secret.password_clear_sync(_ACCOUNT_SCHEMA, attrs, None)
 
 def parse_proxy(proxy):
     """ _parse_proxy from urllib """

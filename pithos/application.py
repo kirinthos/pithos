@@ -25,7 +25,7 @@ from .pithos import NewPithosWindow
 class PithosApplication(Gtk.Application):
     def __init__(self):
         # Use org.gnome to avoid conflict with existing dbus interface net.kevinmehall
-        Gtk.Application.__init__(self, application_id='org.gnome.pithos',
+        Gtk.Application.__init__(self, application_id='io.github.Pithos',
                                 flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
         self.window = None
         self.options = None

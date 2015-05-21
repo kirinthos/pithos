@@ -63,7 +63,8 @@ if sys.platform != 'win32':
         ('/usr/share/icons/ubuntu-mono-dark/apps/16', ['data/icons/ubuntu-mono-dark/pithos-tray-icon.svg']),
         ('/usr/share/icons/ubuntu-mono-light/apps/16', ['data/icons/ubuntu-mono-light/pithos-tray-icon.svg']),
         ('/usr/share/appdata', ['data/pithos.appdata.xml']),
-        ('/usr/share/applications', ['data/pithos.desktop'])
+        ('/usr/share/applications', ['data/pithos.desktop']),
+        ('/usr/share/glib-2.0/schemas', ['data/pithos.gschema.xml']),
     ]
 else:
     data_files = []
