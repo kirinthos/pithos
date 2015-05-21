@@ -34,6 +34,7 @@ import urllib.request
 import gi
 gi.require_version('Gst', '1.0')
 from gi.repository import Gst, GstPbutils, GObject, Gtk, Gdk, Pango, GdkPixbuf, Gio, GLib
+from .gi_composites import GtkTemplate
 
 if Gtk.get_major_version() < 3 or Gtk.get_minor_version() < 14:
     sys.exit('Gtk 3.14 is required')
@@ -115,6 +116,7 @@ class PlayerStatus (object):
     self.pending_duration_query = False
 
 
+@GtkTemplate(ui=get_ui_file('main'))
 class PithosWindow(Gtk.ApplicationWindow):
     __gtype_name__ = "PithosWindow"
     __gsignals__ = {
@@ -125,32 +127,23 @@ class PithosWindow(Gtk.ApplicationWindow):
         "user-changed-play-state": (GObject.SignalFlags.RUN_FIRST, None, (GObject.TYPE_BOOLEAN,)),
     }
 
-    def __init__(self):
-        """__init__ - This function is typically not called directly.
-        Creation a PithosWindow requires redeading the associated ui
-        file and parsing the ui definition extrenally,
-        and then calling PithosWindow.finish_initializing().
+    volume = GtkTemplate.Child()
+    playpause_image = GtkTemplate.Child()
+    statusbar = GtkTemplate.Child()
+    song_menu = GtkTemplate.Child()
+    song_menu_love = GtkTemplate.Child()
+    song_menu_unlove = GtkTemplate.Child()
+    song_menu_ban = GtkTemplate.Child()
+    song_menu_unban = GtkTemplate.Child()
+    songs_treeview = GtkTemplate.Child()
+    stations_button = GtkTemplate.Child()
+    stations_label = GtkTemplate.Child()
 
-        Use the convenience function NewPithosWindow to create
-        PithosWindow object.
-
-        """
-        pass
-
-    def finish_initializing(self, builder, cmdopts):
-        """finish_initalizing should be called after parsing the ui definition
-        and creating a PithosWindow object with it in order to finish
-        initializing the start of the new PithosWindow instance.
-
-        """
-        signal.signal(signal.SIGINT, signal.SIG_DFL)
+    def __init__(self, app, cmdopts):
+        super().__init__(application=app)
+        self.init_template()
 
         self.cmdopts = cmdopts
-
-        #get a reference to the builder and set up the signals
-        self.builder = builder
-        self.builder.connect_signals(self)
-
         self.prefs_dlg = PreferencesPithosDialog.NewPreferencesPithosDialog()
         self.prefs_dlg.set_transient_for(self)
         self.preferences = self.prefs_dlg.get_preferences()
@@ -227,21 +220,9 @@ class PithosWindow(Gtk.ApplicationWindow):
         Gtk.Window.set_default_icon_name('pithos')
         os.environ['PULSE_PROP_media.role'] = 'music'
 
-        self.playpause_image = self.builder.get_object('playpause_image')
-
-        self.volume = self.builder.get_object('volume')
         self.volume.set_relief(Gtk.ReliefStyle.NORMAL)  # It ignores glade...
         self.volume.set_property("value", math.pow(float(self.preferences['volume']), 1.0/3.0))
 
-        self.statusbar = self.builder.get_object('statusbar1')
-
-        self.song_menu = self.builder.get_object('song_menu')
-        self.song_menu_love = self.builder.get_object('menuitem_love')
-        self.song_menu_unlove = self.builder.get_object('menuitem_unlove')
-        self.song_menu_ban = self.builder.get_object('menuitem_ban')
-        self.song_menu_unban = self.builder.get_object('menuitem_unban')
-
-        self.songs_treeview = self.builder.get_object('songs_treeview')
         self.songs_treeview.set_model(self.songs_model)
 
         title_col   = Gtk.TreeViewColumn()
@@ -270,13 +251,11 @@ class PithosWindow(Gtk.ApplicationWindow):
 
         self.songs_treeview.connect('button_press_event', self.on_treeview_button_press_event)
 
-        self.stations_button = self.builder.get_object('stations')
         self.stations_popover = StationsPopover()
         self.stations_popover.set_relative_to(self.stations_button)
         self.stations_popover.set_model(self.stations_model)
         self.stations_popover.listbox.connect('row-activated', self.active_station_changed)
         self.stations_button.set_popover(self.stations_popover)
-        self.stations_label = self.builder.get_object('stationslabel')
 
         self.set_initial_pos()
 
@@ -467,6 +446,7 @@ class PithosWindow(Gtk.ApplicationWindow):
 
         self.emit('song-changed', self.current_song)
 
+    @GtkTemplate.Callback
     def next_song(self, *ignore):
         self.start_song(self.current_song_index + 1)
 
@@ -508,6 +488,7 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.player.set_state(Gst.State.NULL)
         self.emit('play-state-changed', False)
 
+    @GtkTemplate.Callback
     def user_playpause(self, *ignore):
         self.playpause_notify()
 
@@ -897,25 +878,32 @@ class PithosWindow(Gtk.ApplicationWindow):
         song = song or self.current_song
         self.worker_run(song.bookmark_artist, (), None, "Bookmarking...")
 
+    @GtkTemplate.Callback
     def on_menuitem_love(self, widget):
         self.love_song(self.selected_song())
 
+    @GtkTemplate.Callback
     def on_menuitem_ban(self, widget):
         self.ban_song(self.selected_song())
 
+    @GtkTemplate.Callback
     def on_menuitem_unrate(self, widget):
         self.unrate_song(self.selected_song())
 
+    @GtkTemplate.Callback
     def on_menuitem_tired(self, widget):
         self.tired_song(self.selected_song())
 
+    @GtkTemplate.Callback
     def on_menuitem_info(self, widget):
         song = self.selected_song()
         open_browser(song.songDetailURL)
 
+    @GtkTemplate.Callback
     def on_menuitem_bookmark_song(self, widget):
         self.bookmark_song(self.selected_song())
 
+    @GtkTemplate.Callback
     def on_menuitem_bookmark_artist(self, widget):
         self.bookmark_song_artist(self.selected_song())
 
@@ -958,6 +946,7 @@ class PithosWindow(Gtk.ApplicationWindow):
         if new_volume != old_volume:
             self.volume.set_property("value", new_volume)
 
+    @GtkTemplate.Callback
     def on_volume_change_event(self, volumebutton, value):
         self.set_player_volume(value)
 
@@ -1015,9 +1004,11 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.show()
         self.present()
 
+    @GtkTemplate.Callback
     def on_configure_event(self, widget, event):
         self.preferences['x_pos'], self.preferences['y_pos'] = event.x, event.y
 
+    @GtkTemplate.Callback
     def on_kb_playpause(self, widget=None, data=None):
         if not isinstance(widget.get_focus(), Gtk.Button) and data.keyval == 32:
             self.playpause()
@@ -1027,6 +1018,7 @@ class PithosWindow(Gtk.ApplicationWindow):
         """quit - signal handler for closing the PithosWindow"""
         self.destroy()
 
+    @GtkTemplate.Callback
     def on_destroy(self, widget, data=None):
         """on_destroy - called when the PithosWindow is close. """
         self.stop()
@@ -1034,18 +1026,6 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.prefs_dlg.save()
         self.quit()
 
-def NewPithosWindow(app, options):
-    """NewPithosWindow - returns a fully instantiated
-    PithosWindow object. Use this function rather than
-    creating a PithosWindow directly.
-    """
-
-    builder = Gtk.Builder()
-    builder.add_from_file(get_ui_file('main'))
-    window = builder.get_object("pithos_window")
-    window.set_application(app)
-    window.finish_initializing(builder, options)
-    return window
 
 class PithosApplication(Gtk.Application):
     def __init__(self):
@@ -1057,6 +1037,7 @@ class PithosApplication(Gtk.Application):
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
 
         # Setup appmenu
         builder = Gtk.Builder()
@@ -1110,7 +1091,7 @@ class PithosApplication(Gtk.Application):
     def do_activate(self):
         if not self.window:
             logging.info("Pithos %s" %VERSION)
-            self.window = NewPithosWindow(self, self.options)
+            self.window = PithosWindow(self, self.options)
 
         self.window.present()
 
