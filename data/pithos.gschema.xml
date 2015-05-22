@@ -3,10 +3,12 @@
 
     <key name="email" type="s">
       <default>""</default>
+      <summary>Email address for Pandora account</summary>
     </key>
 
     <key name="pandora-one" type="b">
       <default>false</default>
+      <summary>If account has subscribed to Pandora One</summary>
     </key>
 
     <key name="last-station-id" type="s">
@@ -16,27 +18,33 @@
 
     <key name="proxy" type="s">
       <default>""</default>
+      <summary>Proxy address for all connections</summary>
     </key>
 
     <key name="control-proxy" type="s">
       <default>""</default>
-    </key>
-
-    <key name="force-client" type="s">
-      <default>""</default>
+      <summary>Proxy address for pandora connection (not data)</summary>
     </key>
 
     <key name="control-proxy-pac" type="s">
       <default>""</default>
+      <summary>Address to PAC</summary>
+    </key>
+
+    <key name="force-client" type="s">
+      <default>""</default>
+      <summary>Custom JSON to send to Pandora for client info</summary>
     </key>
 
     <key name="win-pos" type="(ii)">
       <default>(0,0)</default>
+      <summary>Position of window</summary>
     </key>
 
     <key name="volume" type="d">
       <default>0.7</default>
       <range min="0.0" max="1.0"/>
+      <summary>Volume of player</summary>
     </key>
 
     <key name="audio-quality" type="s">
@@ -46,6 +54,7 @@
         <choice value="High"/>
       </choices>
       <default>"Medium"</default>
+      <summary>Quality of songs</summary>
     </key>
 
   </schema>
@@ -55,10 +64,12 @@
 
     <key name="enabled" type="b">
       <default>false</default>
+      <summary>If the plugin is loaded</summary>
     </key>
 
     <key name="data" type="s">
       <default>""</default>
+      <summary>Custom data set by plugin</summary>
     </key>
 
   </schema>
