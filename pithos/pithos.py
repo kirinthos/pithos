@@ -151,13 +151,10 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.builder.connect_signals(self)
 
         self.settings = Gio.Settings.new('io.github.Pithos')
-        # FIXME: These don't respect delay()
         self.settings.connect('changed::audio-quality', self.set_audio_quality)
         self.settings.connect('changed::proxy', self.set_proxy)
         self.settings.connect('changed::control_proxy', self.set_proxy)
         self.settings.connect('changed::control_proxy_pac', self.set_proxy)
-        #self.settings.connect('changed::email', self.pandora_connect)
-        #self.settings.connect('changed::pandora-one', self.pandora_connect)
 
         self.prefs_dlg = PreferencesPithosDialog.NewPreferencesPithosDialog(self.settings)
         self.prefs_dlg.set_transient_for(self)
@@ -830,7 +827,6 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.volume.handler_block_by_func(self.on_volume_change_event)
         self.volume.set_property("value", scaled_volume)
         self.volume.handler_unblock_by_func(self.on_volume_change_event)
-        #self.preferences['volume'] = volume
 
     def on_gst_volume(self, player, volumespec):
         vol = self.player.get_property('volume')
@@ -1025,7 +1021,6 @@ class PithosWindow(Gtk.ApplicationWindow):
         # Use a cubic scale for volume. This matches what PulseAudio uses.
         volume = math.pow(value, 3)
         self.player.set_property("volume", volume)
-        #self.preferences['volume'] = volume
 
     def adjust_volume(self, amount):
         old_volume = self.volume.get_property("value")
