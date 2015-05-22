@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: nil; -*-
 ### BEGIN LICENSE
 # Copyright (C) 2015 Patrick Griffis <tingping@tingping.se>
@@ -19,7 +18,7 @@
 import os
 import logging
 from gi.repository import GLib, Gio
-from util import set_account_password
+from .util import set_account_password
 
 def _get_plugin_settings(name):
     return Gio.Settings.new_with_path('io.github.Pithos.plugin', '/io/github/Pithos/%s/' %name)
@@ -102,9 +101,3 @@ def maybe_migrate_settings():
 
     os.remove(config_file)
     logging.debug('Migrated old config')
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    maybe_migrate_settings()
-

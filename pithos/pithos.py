@@ -45,6 +45,7 @@ from .pandora.data import *
 from .pithosconfig import get_ui_file, get_media_file, VERSION
 from .plugin import load_plugins
 from .util import parse_proxy, open_browser, get_account_password
+from .migrate_settings import maybe_migrate_settings
 
 pacparser_imported = False
 try:
@@ -150,6 +151,7 @@ class PithosWindow(Gtk.ApplicationWindow):
         self.builder = builder
         self.builder.connect_signals(self)
 
+        maybe_migrate_settings()
         self.settings = Gio.Settings.new('io.github.Pithos')
         self.settings.connect('changed::audio-quality', self.set_audio_quality)
         self.settings.connect('changed::proxy', self.set_proxy)
