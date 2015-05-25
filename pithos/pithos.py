@@ -718,7 +718,7 @@ class PithosWindow(Gtk.ApplicationWindow):
     def on_gst_plugin_installed(self, result, userdata):
         if result == GstPbutils.InstallPluginsReturn.SUCCESS:
             self.fatal_error_dialog(_("Codec installation successful"),
-                        submsg=_("The required codec was installed, please restart Pithos.")
+                        submsg=_("The required codec was installed, please restart Pithos."))
         else:
             self.error_dialog(_("Codec installation failed"), None,
                         submsg=_("The required codec failed to install. Either manually install it or try another quality setting."))
