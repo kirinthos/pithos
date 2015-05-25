@@ -68,6 +68,7 @@ install-data-hook:
 uninstall-hook:
 	$(UPDATE_ICON_CACHE);
 
+SUBDIRS = po
 CLEANFILES = $(bin_SCRIPTS) $(desktop_FILES) $(appstream_XML)
 EXTRA_DIST = license README.md autogen.sh requirements-osx.txt bin/pithos.in \
 	$(pithosui_DATA) $(pithosmedia_DATA) $(appstream_in_files) $(desktop_in_files) \
