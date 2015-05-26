@@ -1,0 +1,265 @@
+# TingPing <tngpng@gmail.com>, 2015. #zanata
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-26 14:42-0400\n"
+"PO-Revision-Date: 2015-05-26 02:53-0400\n"
+"Last-Translator: TingPing <tngpng@gmail.com>\n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Generator: Zanata 3.6.2\n"
+
+#: ../data/pithos.appdata.xml.in.h:1
+msgid ""
+"Pithos is a easy to use native Pandora Radio client that is more lightweight"
+" than the pandora.com web client and integrates with the desktop."
+msgstr ""
+
+#: ../data/pithos.appdata.xml.in.h:2
+msgid ""
+"It supports most functionality of pandora.com such as rating songs, "
+"creating/managing stations, quickmix, etc. On top of that it has features "
+"such as last.fm scrobbling, media keys, notifications, proxies, and mpris "
+"support."
+msgstr ""
+
+#: ../data/pithos.desktop.in.h:1 ../pithos/data/ui/PithosWindow.ui.h:1
+msgid "Pithos"
+msgstr ""
+
+#: ../data/pithos.desktop.in.h:2
+msgid "Play music from Pandora Radio"
+msgstr ""
+
+#: ../data/pithos.desktop.in.h:3
+msgid "Music;"
+msgstr "Música;"
+
+#: ../pithos/data/ui/AboutPithosDialog.ui.h:1
+msgid "Copyright © 2012 Kevin Mehall"
+msgstr ""
+
+#: ../pithos/data/ui/AboutPithosDialog.ui.h:2
+msgid "A Pandora Radio client for the GNOME Desktop"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:2
+msgid "Pithos Upgrade Required"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:3
+msgid ""
+"Pithos needs to be updated for compatibility with Pandora's latest changes."
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:4
+msgid "Get Help Online"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:5
+msgid "Error"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:6
+msgid "Retry"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:7
+msgid "Song _Info..."
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:8
+msgid "_Love Song"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:9
+msgid "_Unlove Song"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:10
+msgid "_Ban Song"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:11
+msgid "_Unban Song"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:12
+msgid "Don't play song for a month"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:13
+msgid "_Tired of this song"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:14
+msgid "Bookmark"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:15
+msgid "Song"
+msgstr ""
+
+#: ../pithos/data/ui/PithosWindow.ui.h:16
+msgid "Artist"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:1
+msgid "Preferences"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:2
+msgid "Account"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:3
+msgid "Email"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:4
+msgid "Password"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:5
+msgid "Pandora One Subscriber"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:6
+msgid ""
+"<small><a href='http://pandora.com'>Create an account at "
+"pandora.com</a></small>"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:7
+msgid "Advanced Settings"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:8
+msgid "Audio Quality"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:9
+msgid ""
+"This proxy is used for all HTTP/HTTPS traffic. If empty, http_proxy and "
+"https_proxy environment variables will be used."
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:10
+msgid "Proxy URL"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:11
+msgid ""
+"Proxy for Pandora API requests only (for those outside the US). If unset, "
+"the normal proxy is used."
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:12
+msgid "Control Proxy URL"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:13
+msgid ""
+"Proxy auto-configuration URL. Used only if Control Proxy URL above is unset."
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:14
+msgid "Control Proxy PAC"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:15
+msgid "Pandora"
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:16
+msgid "This plugin either must be enabled or does not support preferences."
+msgstr ""
+
+#: ../pithos/data/ui/PreferencesPithosDialog.ui.h:17
+msgid "Plugins"
+msgstr ""
+
+#: ../pithos/data/ui/SearchDialog.ui.h:1
+msgid "Search"
+msgstr ""
+
+#: ../pithos/data/ui/StationsDialog.ui.h:1
+msgid "Listen Now"
+msgstr ""
+
+#: ../pithos/data/ui/StationsDialog.ui.h:2
+msgid "Info"
+msgstr ""
+
+#: ../pithos/data/ui/StationsDialog.ui.h:3
+msgid "Rename"
+msgstr ""
+
+#: ../pithos/data/ui/StationsDialog.ui.h:4
+msgid "Delete"
+msgstr ""
+
+#: ../pithos/data/ui/StationsDialog.ui.h:5
+msgid "Manage Stations"
+msgstr ""
+
+#: ../pithos/data/ui/StationsDialog.ui.h:6
+msgid "Add Station"
+msgstr ""
+
+#: ../pithos/data/ui/StationsDialog.ui.h:7
+msgid "Genre Stations"
+msgstr ""
+
+#: ../pithos/data/ui/StationsDialog.ui.h:8
+msgid "Refresh Stations"
+msgstr ""
+
+#: ../pithos/data/ui/app_menu.ui.h:1
+msgid "_Stations"
+msgstr ""
+
+#: ../pithos/data/ui/app_menu.ui.h:2
+msgid "_Preferences"
+msgstr ""
+
+#: ../pithos/data/ui/app_menu.ui.h:3
+msgid "_About"
+msgstr ""
+
+#: ../pithos/data/ui/app_menu.ui.h:4
+msgid "_Quit"
+msgstr ""
+
+#: ../pithos/pithos.py:720
+msgid "Codec installation successful"
+msgstr ""
+
+#: ../pithos/pithos.py:721
+msgid "The required codec was installed, please restart Pithos."
+msgstr ""
+
+#: ../pithos/pithos.py:723
+msgid "Codec installation failed"
+msgstr ""
+
+#: ../pithos/pithos.py:724
+msgid ""
+"The required codec failed to install. Either manually install it or try "
+"another quality setting."
+msgstr ""
+
+#: ../pithos/pithos.py:732
+msgid "Missing codec"
+msgstr ""
+
+#: ../pithos/pithos.py:733
+msgid ""
+"GStreamer is missing a plugin and it could not be automatically installed. "
+"Either manually install it or try another quality setting."
+msgstr ""

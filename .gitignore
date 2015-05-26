@@ -20,3 +20,4 @@ stamp-it
 .intltool-merge-cache
 POTFILES
 compile
+*.gmo
